@@ -1,4 +1,4 @@
-import { generateHash } from './helpers';
+import { generateHash, fetch } from './helpers';
 
 const requiredFields = { 'advertiser-id': 'number', sku: 'string' };
 const getFormattedConsoleMessage = (message, messageStyle = '') => [
@@ -53,7 +53,7 @@ export default class Scraper {
     return !!Object.keys(this.errors).length;
   }
 
-  async scrape() {
+  scrape() {
     // Clear errors for each new scrape
     this.errors = {};
 
@@ -77,47 +77,45 @@ export default class Scraper {
     }
 
     // Resolve field result values
-    await Promise.all(
-      Object.keys(fieldValues).map(async field => {
-        // Execute function type fields
-        if (typeof fieldValues[field] === 'function') {
-          try {
-            fieldValues[field] = await fieldValues[field]();
-          } catch ({ message }) {
-            if (!this.config.optionalFields.includes(field)) {
-              this.addError(field, message);
-            }
-          }
-        }
-
-        // String trimming
-        if (typeof fieldValues[field] === 'string') {
-          fieldValues[field] = fieldValues[field].replace(/\s+/g, ' ').trim();
-        }
-
-        // Remove empty fields
-        if (fieldValues[field] == null || fieldValues[field] === '') {
-          delete fieldValues[field];
-
+    Object.keys(fieldValues).forEach(field => {
+      // Execute function type fields
+      if (typeof fieldValues[field] === 'function') {
+        try {
+          fieldValues[field] = fieldValues[field]();
+        } catch ({ message }) {
           if (!this.config.optionalFields.includes(field)) {
-            this.addError(field, 'is empty');
+            this.addError(field, message);
           }
         }
+      }
 
-        // Field exceptions
-        if (Object.keys(requiredFields).includes(field)) {
-          // eslint-disable-next-line valid-typeof
-          if (typeof fieldValues[field] !== requiredFields[field]) {
-            this.addError(field, `needs to be a ${requiredFields[field]}`);
-          }
+      // String trimming
+      if (typeof fieldValues[field] === 'string') {
+        fieldValues[field] = fieldValues[field].replace(/\s+/g, ' ').trim();
+      }
+
+      // Remove empty fields
+      if (fieldValues[field] == null || fieldValues[field] === '') {
+        delete fieldValues[field];
+
+        if (!this.config.optionalFields.includes(field)) {
+          this.addError(field, 'is empty');
         }
-      }),
-    );
+      }
+
+      // Field exceptions
+      if (Object.keys(requiredFields).includes(field)) {
+        // eslint-disable-next-line valid-typeof
+        if (typeof fieldValues[field] !== requiredFields[field]) {
+          this.addError(field, `needs to be a ${requiredFields[field]}`);
+        }
+      }
+    });
 
     // Execute optional lifecycle hook to manipulate fields before pushing
     if (this.config.beforePush) {
       try {
-        fieldValues = await this.config.beforePush(fieldValues);
+        fieldValues = this.config.beforePush(fieldValues);
       } catch ({ message }) {
         this.addError('beforePush', message);
       }
@@ -134,30 +132,21 @@ export default class Scraper {
         delete fieldValues.sku;
 
         try {
-          const response = await fetch('https://d.lemonpi.io/scrapes', {
-            method: 'post',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              'advertiser-id': advertiserId,
-              sku,
-              fields: fieldValues,
-            }),
-          });
+          const options = {
+            method: 'POST',
+            body: { 'advertiser-id': advertiserId, sku, fields: fieldValues },
+          };
 
-          // TODO: validate result values
-          // const result = await response.json();
-
-          if (response.ok) {
-            this.logSuccess('Scrape & push successful:', fieldValues);
-          } else {
-            this.addError('Push', 'unsuccessful:', response);
-          }
+          fetch(
+            'https://d.lemonpi.io/scrapes',
+            // TODO: validate result values
+            () => this.logSuccess('Scrape & push successful:', fieldValues),
+            options,
+          );
         } catch ({ message }) {
-          this.addError('Push', message);
+          this.addError('Push unsuccessful:', message);
         }
-      }
-
-      if (this.hasErrors()) {
+      } else {
         this.addError('Scrape', 'unsuccessful:', fieldValues);
         this.logErrors();
       }
