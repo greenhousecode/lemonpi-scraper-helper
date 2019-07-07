@@ -1,0 +1,29 @@
+{
+  "name": "lemonpi-scraper-helper",
+  "version": "1.0.0",
+  "main": "dist/bundle.umd.js",
+  "module": "dist/bundle.esm.js",
+  "files": [
+    "/dist/*"
+  ],
+  "scripts": {
+    "lint": "eslint --ignore-path .gitignore .",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "prepare": "npm run lint && npm run build",
+    "precommit": "npm run lint"
+  },
+  "author": "Rick Stevens <rick.stevens@greenhousegroup.com> (http://www.greenhousegroup.com/)",
+  "devDependencies": {
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "moment": "^2.24.0",
+    "prettier": "^1.18.2",
+    "rollup": "^1.16.3",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-uglify": "^6.0.2"
+  }
+}
