@@ -14,7 +14,13 @@
     "precommit": "npm run lint"
   },
   "author": "Rick Stevens <rick.stevens@greenhousegroup.com> (http://www.greenhousegroup.com/)",
+  "repository": "github:greenhousecode/lemonpi-scraper-helper",
+  "license": "ISC",
+  "bugs": "https://github.com/greenhousecode/lemonpi-scraper-helper/issues",
+  "homepage": "https://github.com/greenhousecode/lemonpi-scraper-helper#readme",
   "devDependencies": {
+    "@babel/core": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
     "eslint": "^5.3.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^6.0.0",
