@@ -42,8 +42,8 @@ export default class Scraper {
     if (this.config.debug) {
       Object.keys(this.errors).forEach(subject =>
         console.error(
-          ...getFormattedConsoleMessage(this.errors[subject][0], 'font-weight:bold'),
-          ...this.errors[subject].slice(1),
+          ...getFormattedConsoleMessage(subject, 'font-weight:bold'),
+          ...this.errors[subject],
         ),
       );
     }
@@ -76,48 +76,50 @@ export default class Scraper {
       this.addError('The page', 'has been translated by the browser, and will be ignored');
     }
 
-    // Resolve field result values
-    Object.keys(fieldValues).forEach(field => {
-      // Execute function type fields
-      if (typeof fieldValues[field] === 'function') {
-        try {
-          fieldValues[field] = fieldValues[field]();
-        } catch ({ message }) {
-          if (!this.config.optionalFields.includes(field)) {
-            this.addError(field, message);
+    if (!this.hasErrors()) {
+      // Resolve field result values
+      Object.keys(fieldValues).forEach(field => {
+        // Execute function type fields
+        if (typeof fieldValues[field] === 'function') {
+          try {
+            fieldValues[field] = fieldValues[field]();
+          } catch ({ message }) {
+            if (!this.config.optionalFields.includes(field)) {
+              this.addError(field, message);
+            }
           }
         }
-      }
 
-      // String trimming
-      if (typeof fieldValues[field] === 'string') {
-        fieldValues[field] = fieldValues[field].replace(/\s+/g, ' ').trim();
-      }
-
-      // Remove empty fields
-      if (fieldValues[field] == null || fieldValues[field] === '') {
-        delete fieldValues[field];
-
-        if (!this.config.optionalFields.includes(field)) {
-          this.addError(field, 'is empty');
+        // String trimming
+        if (typeof fieldValues[field] === 'string') {
+          fieldValues[field] = fieldValues[field].replace(/\s+/g, ' ').trim();
         }
-      }
 
-      // Field exceptions
-      if (Object.keys(requiredFields).includes(field)) {
-        // eslint-disable-next-line valid-typeof
-        if (typeof fieldValues[field] !== requiredFields[field]) {
-          this.addError(field, `needs to be a ${requiredFields[field]}`);
+        // Remove empty fields
+        if (fieldValues[field] == null || fieldValues[field] === '') {
+          delete fieldValues[field];
+
+          if (!this.config.optionalFields.includes(field)) {
+            this.addError(field, 'is empty');
+          }
         }
-      }
-    });
 
-    // Execute optional lifecycle hook to manipulate fields before pushing
-    if (this.config.beforePush) {
-      try {
-        fieldValues = this.config.beforePush(fieldValues);
-      } catch ({ message }) {
-        this.addError('beforePush', message);
+        // Field exceptions
+        if (Object.keys(requiredFields).includes(field)) {
+          // eslint-disable-next-line valid-typeof
+          if (typeof fieldValues[field] !== requiredFields[field]) {
+            this.addError(field, `needs to be a ${requiredFields[field]}`);
+          }
+        }
+      });
+
+      // Execute optional lifecycle hook to manipulate fields before pushing
+      if (this.config.beforePush) {
+        try {
+          fieldValues = this.config.beforePush(fieldValues);
+        } catch ({ message }) {
+          this.addError('beforePush failed:', message);
+        }
       }
     }
 
@@ -147,7 +149,7 @@ export default class Scraper {
           this.addError('Push unsuccessful:', message);
         }
       } else {
-        this.addError('Scrape', 'unsuccessful:', fieldValues);
+        this.addError('Scrape unsuccessful:', fieldValues);
         this.logErrors();
       }
     }
@@ -155,7 +157,7 @@ export default class Scraper {
     // Scrape again
     if (this.config.keepScraping || this.hasErrors()) {
       // TODO: remove arrow function before this.scrape()?
-      setTimeout(() => this.scrape(), this.config.interval);
+      setTimeout(this.scrape.bind(this), this.config.interval);
     }
   }
 }

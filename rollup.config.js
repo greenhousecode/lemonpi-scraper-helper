@@ -1,3 +1,4 @@
+import { eslint } from 'rollup-plugin-eslint';
 import { uglify } from 'rollup-plugin-uglify';
 import babel from 'rollup-plugin-babel';
 import moment from 'moment';
@@ -9,7 +10,12 @@ const banner = `/*! ${name} v${version} ${moment().format('YYYY/MM/DD')} */`;
 export default [
   {
     input,
-    plugins: [babel(), uglify({ output: { comments: /^!/ } })],
+    plugins: [
+      // Workaround: ignore global .eslintrc files
+      eslint({ useEslintrc: false, configFile: '.eslintrc' }),
+      babel(),
+      uglify({ output: { comments: /^!/ } }),
+    ],
     output: {
       banner,
       file: main,
