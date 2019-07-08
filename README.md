@@ -25,7 +25,7 @@ scrape({
 
     // Optional, arbitrary fields with example values
     url: getUrl,
-    title: () => document.querySelector('h1').textContent,
+    name: () => document.querySelector('h1').textContent,
   },
 });
 ```

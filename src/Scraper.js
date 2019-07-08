@@ -123,7 +123,7 @@ export default class Scraper {
       }
     }
 
-    const hashedResult = generateHash(fieldValues);
+    const hashedResult = generateHash(fieldValues, window.location.href);
 
     if (this.lastScrapedHash !== hashedResult) {
       this.lastScrapedHash = hashedResult;
@@ -156,7 +156,6 @@ export default class Scraper {
 
     // Scrape again
     if (this.config.keepScraping || this.hasErrors()) {
-      // TODO: remove arrow function before this.scrape()?
       setTimeout(this.scrape.bind(this), this.config.interval);
     }
   }
