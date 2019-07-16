@@ -33,7 +33,7 @@ scrape({
 Or directly in the browser:
 
 ```html
-<script src="https://unpkg.com/lemonpi-scraper-helper/dist/bundle.umd.js"></script>
+<script src="https://unpkg.com/lemonpi-scraper-helper"></script>
 <script>
   window.lemonpiScraperHelper.scrape({ ... });
 </script>
