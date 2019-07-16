@@ -38,6 +38,10 @@ export default class Scraper {
     }
   }
 
+  hasErrors() {
+    return !!Object.keys(this.errors).length;
+  }
+
   logErrors() {
     if (this.config.debug) {
       Object.keys(this.errors).forEach(subject =>
@@ -49,8 +53,9 @@ export default class Scraper {
     }
   }
 
-  hasErrors() {
-    return !!Object.keys(this.errors).length;
+  onPush(result, fieldValues) {
+    // TODO: validate result
+    this.logSuccess('Scrape & push successful:', fieldValues);
   }
 
   scrape() {
@@ -116,6 +121,7 @@ export default class Scraper {
       // Execute optional lifecycle hook to manipulate fields before pushing
       if (this.config.beforePush) {
         try {
+          // TODO: add callback argument after fieldValues
           fieldValues = this.config.beforePush(fieldValues);
         } catch ({ message }) {
           this.addError('beforePush failed:', message);
@@ -139,12 +145,7 @@ export default class Scraper {
             body: { 'advertiser-id': advertiserId, sku, fields: fieldValues },
           };
 
-          fetch(
-            'https://d.lemonpi.io/scrapes',
-            // TODO: validate result values
-            () => this.logSuccess('Scrape & push successful:', fieldValues),
-            options,
-          );
+          fetch('https://d.lemonpi.io/scrapes', this.onPush.bind(this, fieldValues), options);
         } catch ({ message }) {
           this.addError('Push unsuccessful:', message);
         }

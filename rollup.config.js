@@ -2,10 +2,11 @@ import { eslint } from 'rollup-plugin-eslint';
 import { uglify } from 'rollup-plugin-uglify';
 import babel from 'rollup-plugin-babel';
 import moment from 'moment';
-import { name, version, main, module } from './package.json';
+import { name as pkgName, version, main, module } from './package.json';
 
 const input = 'src/main.js';
-const banner = `/*! ${name} v${version} ${moment().format('YYYY/MM/DD')} */`;
+const banner = `/*! ${pkgName} v${version} ${moment().format('YYYY/MM/DD')} */`;
+const name = pkgName.replace(/-[a-z]/g, m => m[1].toUpperCase()); // kebab-case to camelCase
 
 export default [
   {
@@ -20,7 +21,7 @@ export default [
       banner,
       file: main,
       format: 'umd',
-      name: 'lemonpiScraperHelper',
+      name,
     },
   },
   {
