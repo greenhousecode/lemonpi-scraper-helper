@@ -61,12 +61,31 @@ export default class Scraper {
     }
   }
 
+  push(fieldValues) {
+    const { 'advertiser-id': advertiserId, sku } = fieldValues;
+    delete fieldValues['advertiser-id'];
+    delete fieldValues.sku;
+
+    try {
+      const url = this.config.debug
+        ? 'https://d.lemonpi.io/scrapes?validate=true'
+        : 'https://d.lemonpi.io/scrapes';
+
+      fetch(url, this.onPush.bind(this, fieldValues), {
+        method: 'POST',
+        body: { 'advertiser-id': advertiserId, sku, fields: fieldValues },
+      });
+    } catch ({ message }) {
+      this.addError('Push unsuccessful:', message);
+    }
+  }
+
   scrape() {
     // Clear errors for each new scrape
     this.errors = {};
 
     // Merge in required fields, if not present
-    let fieldValues = Object.keys(requiredFields).reduce(
+    const fieldValues = Object.keys(requiredFields).reduce(
       (fields, requiredField) => ({
         ...fields,
         [requiredField]: fields[requiredField] || null,
@@ -120,16 +139,6 @@ export default class Scraper {
           }
         }
       });
-
-      // Execute optional lifecycle hook to manipulate fields before pushing
-      if (this.config.beforePush) {
-        try {
-          // TODO: add callback argument after fieldValues
-          fieldValues = this.config.beforePush(fieldValues);
-        } catch ({ message }) {
-          this.addError('beforePush failed:', message);
-        }
-      }
     }
 
     const hashedResult = generateHash(fieldValues, window.location.href);
@@ -138,21 +147,15 @@ export default class Scraper {
       this.lastScrapedHash = hashedResult;
 
       if (!this.hasErrors()) {
-        const { 'advertiser-id': advertiserId, sku } = fieldValues;
-        delete fieldValues['advertiser-id'];
-        delete fieldValues.sku;
-
-        try {
-          const url = this.config.debug
-            ? 'https://d.lemonpi.io/scrapes?validate=true'
-            : 'https://d.lemonpi.io/scrapes';
-
-          fetch(url, this.onPush.bind(this, fieldValues), {
-            method: 'POST',
-            body: { 'advertiser-id': advertiserId, sku, fields: fieldValues },
-          });
-        } catch ({ message }) {
-          this.addError('Push unsuccessful:', message);
+        // Execute optional lifecycle hook to manipulate fields before pushing
+        if (typeof this.config.beforePush === 'function') {
+          try {
+            this.config.beforePush(fieldValues, this.push.bind(this));
+          } catch ({ message }) {
+            this.addError('beforePush failed:', message);
+          }
+        } else {
+          this.push(fieldValues);
         }
       } else {
         this.addError('Scrape unsuccessful:', fieldValues);

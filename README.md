@@ -43,15 +43,17 @@ Or directly in the browser:
 
 #### `scrape(Object)`
 
-- **`fields`** (`object`)
-  - **`"advertiser-id", "sku", ...`** (`mixed`)
-    Product field values to be pushed to LemonPI. **Use functions to access asynchronous or variable entities, like DOM elements, data layers, or the URL.** Should always return a JSON-friendly value.
-- **`urlTest`** (`regex`)
+- **`fields`** (`object`, required)
+  - **`advertiser-id`** (`number`, required)
+  - **`sku`** (`string`, required)
+  - **`...`** (`mixed`)
+    Product field values to be pushed to LemonPI. **Use function expressions to access asynchronous or variable entities, like DOM elements, data layers, or the URL.** Should always return a JSON-friendly value.
+- **`urlTest`** (`regex`, default: `/$/`)
   Only scrape when this regular expression matches `window.location.href`.
-- **`optionalFields`** (`array` of `string` values)
+- **`optionalFields`** (`array` of `string` values, default: `[]`)
   Add field names that may allow a scrape if their value returns empty.
-- **`beforePush`** (`function`)
-  Lifecycle hook to asynchronously manipulate field data. Takes one argument "fields" (`object`), and expects it as return value.
+- **`beforePush`** (`function`, default: `(fields, done) => { done(fields); }`)
+  Lifecycle hook to asynchronously manipulate field data before pushing to LemonPI. Takes arguments "fields" (`object`) containing the values for each configured field, and "done" (`function`) containing the callback function which expects a "fields" object.
 - **`keepScraping`** (`boolean`, default: `true`)
   After one successful scrape, continue to scrape when field values update.
 - **`interval`** (`number`, default: `500`)
