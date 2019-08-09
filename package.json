@@ -10,7 +10,7 @@
     "lint": "eslint --ignore-path .gitignore .",
     "build": "rollup -c",
     "dev": "rollup -cw",
-    "prepare": "npm run lint && npm run build"
+    "prepare": "yarn lint && yarn build"
   },
   "pre-commit": "lint",
   "author": "Rick Stevens <rick.stevens@greenhousegroup.com> (http://www.greenhousegroup.com/)",

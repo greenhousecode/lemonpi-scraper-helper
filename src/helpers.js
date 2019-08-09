@@ -1,10 +1,8 @@
 // Crude fetch mimic
 export const fetch = (url, resolve = () => {}, options = {}) => {
   const { method = 'GET', body } = options;
-  let rejected = false;
 
   const requestTimeout = setTimeout(() => {
-    rejected = true;
     throw new Error('Request timed out');
   }, 3000);
 
@@ -15,14 +13,10 @@ export const fetch = (url, resolve = () => {}, options = {}) => {
     if (xhr.readyState === XMLHttpRequest.DONE) {
       clearTimeout(requestTimeout);
 
-      if (xhr.status === 200) {
-        try {
-          resolve(JSON.parse(xhr.responseText));
-        } catch (_) {
-          resolve();
-        }
-      } else if (!rejected) {
-        throw new Error(`Server responded status ${xhr.status}`);
+      try {
+        resolve(JSON.parse(xhr.responseText));
+      } catch (_) {
+        resolve();
       }
     }
   };

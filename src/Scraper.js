@@ -54,8 +54,11 @@ export default class Scraper {
   }
 
   onPush(result, fieldValues) {
-    // TODO: validate result
-    this.logSuccess('Scrape & push successful:', fieldValues);
+    try {
+      this.addError('Push unsuccessful:', result.error.details.error.message);
+    } catch (_) {
+      this.logSuccess('Scrape & push successful:', fieldValues);
+    }
   }
 
   scrape() {
@@ -140,22 +143,25 @@ export default class Scraper {
         delete fieldValues.sku;
 
         try {
-          const options = {
+          const url = this.config.debug
+            ? 'https://d.lemonpi.io/scrapes?validate=true'
+            : 'https://d.lemonpi.io/scrapes';
+
+          fetch(url, this.onPush.bind(this, fieldValues), {
             method: 'POST',
             body: { 'advertiser-id': advertiserId, sku, fields: fieldValues },
-          };
-
-          fetch('https://d.lemonpi.io/scrapes', this.onPush.bind(this, fieldValues), options);
+          });
         } catch ({ message }) {
           this.addError('Push unsuccessful:', message);
         }
       } else {
         this.addError('Scrape unsuccessful:', fieldValues);
-        this.logErrors();
       }
+
+      this.logErrors();
     }
 
-    // Scrape again
+    // Scrape again?
     if (this.config.keepScraping || this.hasErrors()) {
       setTimeout(this.scrape.bind(this), this.config.interval);
     }
