@@ -54,9 +54,9 @@ export default class Scraper {
   }
 
   onPush(result, fieldValues) {
-    try {
-      this.addError('Push unsuccessful:', result.error.details.error.message);
-    } catch (_) {
+    if (result) {
+      this.addError('Push unsuccessful:', result);
+    } else {
       this.logSuccess('Scrape & push successful:', fieldValues);
     }
   }
