@@ -1,6 +1,6 @@
 # LemonPI Scraper Helper
 
-> Asynchronously scrape a website and push product data to [LemonPI](http://www.lemonpi.io/)'s Manage-R.
+> Asynchronously scrape a website, and push product data to [LemonPI](http://www.lemonpi.io/)'s Manage-R.
 
 ## Install
 
@@ -56,7 +56,7 @@ Or directly in the browser:
   Lifecycle hook to asynchronously manipulate field data before pushing to LemonPI. Takes arguments "fields" (`object`) containing the values for each configured field, and "done" (`function`) containing the callback function which expects a "fields" object.
 - **`keepScraping`** (`boolean`, default: `true`)
   After one successful scrape, continue to scrape when field values update.
-- **`interval`** (`number`, default: `500`)
+- **`interval`** (`number`, default: `750`)
   The delay between field value checks in milliseconds.
 - **`allowTranslated`** (`boolean`, default: `false`)
   Enables scraping of client-translated pages (i.e. Google Translate).

@@ -17,7 +17,7 @@ export default class Scraper {
       optionalFields: [],
       keepScraping: true,
       beforePush: null,
-      interval: 500,
+      interval: 750,
       urlTest: /$/,
       fields: {},
       ...config,
@@ -53,7 +53,7 @@ export default class Scraper {
     }
   }
 
-  onPush(result, fieldValues) {
+  onPush(fieldValues, result) {
     if (result) {
       this.addError('Push unsuccessful:', result);
     } else {
