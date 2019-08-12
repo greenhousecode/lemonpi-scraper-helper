@@ -87,7 +87,7 @@ export const getUrl = urlConfig => {
       });
     }
 
-    if (urlConfig.hash || urlConfig.allowHash) {
+    if (urlConfig.allowHash) {
       url += window.location.hash;
     }
   }
