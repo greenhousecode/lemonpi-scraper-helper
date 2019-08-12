@@ -1,6 +1,6 @@
 # LemonPI Scraper Helper
 
-> Asynchronously scrape a website and push product data to [LemonPI](http://www.lemonpi.io/)'s Manage-R.
+> Asynchronously scrape a website, and push product data to [LemonPI](http://www.lemonpi.io/)'s Manage-R.
 
 ## Install
 
@@ -25,7 +25,7 @@ scrape({
 
     // Optional, arbitrary fields with example values
     url: getUrl,
-    title: () => document.querySelector('h1').textContent,
+    name: () => document.querySelector('h1').textContent,
   },
 });
 ```
@@ -33,7 +33,7 @@ scrape({
 Or directly in the browser:
 
 ```html
-<script src="https://unpkg.com/lemonpi-scraper-helper/dist/bundle.umd.js"></script>
+<script src="https://unpkg.com/lemonpi-scraper-helper"></script>
 <script>
   window.lemonpiScraperHelper.scrape({ ... });
 </script>
@@ -43,18 +43,20 @@ Or directly in the browser:
 
 #### `scrape(Object)`
 
-- **`fields`** (`object`)
-  - **`"advertiser-id", "sku", ...`** (`mixed`)
-    Product field values to be pushed to LemonPI. **Use functions to access asynchronous or variable entities, like DOM elements, data layers, or the URL.** Should always return a JSON-friendly value.
-- **`urlTest`** (`regex`)
+- **`fields`** (`object`, required)
+  - **`advertiser-id`** (`number`, required)
+  - **`sku`** (`string`, required)
+  - **`...`** (`mixed`)
+    Product field values to be pushed to LemonPI. **Use function expressions to access asynchronous or variable entities, like DOM elements, data layers, or the URL.** Should always return a JSON-friendly value.
+- **`urlTest`** (`regex`, default: `/$/`)
   Only scrape when this regular expression matches `window.location.href`.
-- **`optionalFields`** (`array` of `string` values)
+- **`optionalFields`** (`array` of `string` values, default: `[]`)
   Add field names that may allow a scrape if their value returns empty.
-- **`beforePush`** (`function`)
-  Lifecycle hook to asynchronously manipulate field data. Takes one argument "fields" (`object`), and expects it as return value.
+- **`beforePush`** (`function`, default: `(fields, done) => { done(fields); }`)
+  Lifecycle hook to asynchronously manipulate field data before pushing to LemonPI. Takes arguments "fields" (`object`) containing the values for each configured field, and "done" (`function`) containing the callback function which expects a "fields" object.
 - **`keepScraping`** (`boolean`, default: `true`)
   After one successful scrape, continue to scrape when field values update.
-- **`interval`** (`number`, default: `500`)
+- **`interval`** (`number`, default: `750`)
   The delay between field value checks in milliseconds.
 - **`allowTranslated`** (`boolean`, default: `false`)
   Enables scraping of client-translated pages (i.e. Google Translate).

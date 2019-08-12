@@ -1,27 +1,34 @@
-import moment from 'moment';
-import babel from 'rollup-plugin-babel';
+import { eslint } from 'rollup-plugin-eslint';
 import { uglify } from 'rollup-plugin-uglify';
-import { name, version } from './package.json';
+import babel from 'rollup-plugin-babel';
+import moment from 'moment';
+import { name as pkgName, version, main, module } from './package.json';
 
 const input = 'src/main.js';
-const banner = `/*! ${name} v${version} ${moment().format('YYYY/MM/DD')} */`;
+const banner = `/*! ${pkgName} v${version} ${moment().format('YYYY/MM/DD')} */`;
+const name = pkgName.replace(/-[a-z]/g, m => m[1].toUpperCase()); // kebab-case to camelCase
 
 export default [
   {
     input,
-    plugins: [babel(), uglify({ output: { comments: /^!/ } })],
+    plugins: [
+      // Workaround: ignore global .eslintrc files
+      eslint({ useEslintrc: false, configFile: '.eslintrc' }),
+      babel(),
+      uglify({ output: { comments: /^!/ } }),
+    ],
     output: {
       banner,
-      file: 'dist/bundle.umd.js',
+      file: main,
       format: 'umd',
-      name: 'slp',
+      name,
     },
   },
   {
     input,
     output: {
       banner,
-      file: 'dist/bundle.esm.js',
+      file: module,
       format: 'esm',
     },
   },
