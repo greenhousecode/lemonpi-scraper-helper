@@ -8,11 +8,26 @@
   ],
   "scripts": {
     "lint": "eslint --ignore-path .gitignore .",
+    "format": "prettier --ignore-path .gitignore --check '**/*.{css,graphql,html,json,md,scss,yml}'",
     "build": "rollup -c",
     "dev": "rollup -cw",
     "prepare": "yarn lint && yarn build"
   },
-  "pre-commit": "lint",
+  "lint-staged": {
+    "*.{js,vue}": [
+      "yarn lint --fix",
+      "git add"
+    ],
+    "*.{css,graphql,html,json,md,scss,yml}": [
+      "yarn format --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "author": "Rick Stevens <rick.stevens@greenhousegroup.com> (http://www.greenhousegroup.com/)",
   "repository": "github:greenhousecode/lemonpi-scraper-helper",
   "license": "ISC",
@@ -26,8 +41,9 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "husky": "^3.0.7",
+    "lint-staged": "^9.4.1",
     "moment": "^2.24.0",
-    "pre-commit": "^1.2.2",
     "prettier": "^1.18.2",
     "rollup": "^1.16.3",
     "rollup-plugin-babel": "^4.3.3",

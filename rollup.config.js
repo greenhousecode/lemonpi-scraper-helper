@@ -11,12 +11,7 @@ const name = pkgName.replace(/-[a-z]/g, m => m[1].toUpperCase()); // kebab-case 
 export default [
   {
     input,
-    plugins: [
-      // Workaround: ignore global .eslintrc files
-      eslint({ useEslintrc: false, configFile: '.eslintrc' }),
-      babel(),
-      uglify({ output: { comments: /^!/ } }),
-    ],
+    plugins: [eslint(), babel(), uglify({ output: { comments: /^!/ } })],
     output: {
       banner,
       file: main,
