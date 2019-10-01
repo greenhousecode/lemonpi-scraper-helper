@@ -58,6 +58,8 @@ When using LemonPI Scraper Helper directly from the browser, prepend all followi
   Add field names that may allow a scrape if their value returns empty.
 - **`beforePush`** (`function`, default: `(fields, done) => { done(fields); }`)
   Lifecycle hook to asynchronously manipulate field data before pushing to LemonPI. Takes arguments "fields" (`object`) containing the values for each configured field, and "done" (`function`) containing the callback function which expects a "fields" object.
+- **`afterPush`** (`function`, default: `(fields) => {}`)
+  Lifecycle hook to execute after pushing data to LemonPI successfully. Takes arguments "fields" (`object`) containing the values for each configured field.
 - **`keepScraping`** (`boolean`, default: `true`)
   After one successful scrape, continue to scrape when field values update.
 - **`interval`** (`number`, default: `750`)

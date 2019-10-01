@@ -17,6 +17,7 @@ export default class Scraper {
       optionalFields: [],
       keepScraping: true,
       beforePush: null,
+      afterPush: null,
       interval: 750,
       urlTest: /$/,
       fields: {},
@@ -60,6 +61,16 @@ export default class Scraper {
       this.logErrors();
     } else {
       this.logSuccess('Scrape & push successful:', fieldValues);
+
+      // Execute optional lifecycle hook after successfully pushing data to LemonPI
+      if (typeof this.config.afterPush === 'function') {
+        try {
+          this.config.afterPush(fieldValues);
+        } catch ({ message }) {
+          this.addError('afterPush failed:', message);
+          this.logErrors();
+        }
+      }
     }
   }
 
