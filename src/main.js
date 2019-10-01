@@ -12,9 +12,7 @@ import {
 } from './helpers';
 
 export const scrape = (...args) => new Scraper(...args);
-
-// TODO: when the LP endpoint is known
-// export const event = () => {};
+export const event = () => {};
 
 export {
   getUrl,

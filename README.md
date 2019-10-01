@@ -6,6 +6,8 @@
 
 ```shell
 npm install --save lemonpi-scraper-helper
+# Or
+yarn add lemonpi-scraper-helper
 ```
 
 ## Usage
@@ -41,7 +43,9 @@ Or directly in the browser:
 
 ## API
 
-#### `scrape(Object)`
+When using LemonPI Scraper Helper directly from the browser, prepend all following methods with `window.lemonpiScraperHelper.`:
+
+### `scrape(Object)`
 
 - **`fields`** (`object`, required)
   - **`advertiser-id`** (`number`, required)
@@ -63,7 +67,7 @@ Or directly in the browser:
 - **`debug`** (`boolean`, default: `/lemonpi_debug/i.test(window.location.href)`)
   Enables console debugging.
 
-#### `getUrl([Object])` (`string`)
+### `getUrl([Object])` (`string`)
 
 Returns the current URL without query string parameters or location hash. Use the optional configuration to make exceptions:
 
@@ -74,34 +78,34 @@ Returns the current URL without query string parameters or location hash. Use th
 - **`"allowHash"`** (`boolean`, default: `false`)
   Include the location hash with the URL.
 
-#### `getUrlPathSegment(Integer)` (`string`)
+### `getUrlPathSegment(Integer)` (`string`)
 
 Retrieves a path segment from the URL by index. E.g. `"http://www.example.com/foo/bar"` → `getUrlPathSegment(0)` returns `"foo"`.
 
-#### `getUrlPathSegments()` (`array` of `string` values)
+### `getUrlPathSegments()` (`array` of `string` values)
 
 Retrieves all path segments from the URL.
 
-#### `getUrlQueryParameter(String)` (`string`)
+### `getUrlQueryParameter(String)` (`string`)
 
 Retrieves a query string parameter value from the URL. E.g. `"http://www.example.com/?foo=bar"` → `getUrlQueryParameter('foo')` returns `"bar"`.
 
-#### `getUrlQueryParameters()` (`object` of `string` values)
+### `getUrlQueryParameters()` (`object` of `string` values)
 
 Retrieves all query string parameters from the URL.
 
-#### `getBackgroundImageUrl(String|Object)` (`string`)
+### `getBackgroundImageUrl(String|Object)` (`string`)
 
 Enter a DOM selector or element node to retrieve its background image URL. Works cross-browser.
 
-#### `generateHash(JSON-friendly-types[, ...])` (`string`)
+### `generateHash(JSON-friendly-types[, ...])` (`string`)
 
 Returns a unique hash for the supplied arguments.
 
-#### `setCookie(String, JSON-friendly-types)`
+### `setCookie(String, JSON-friendly-types)`
 
 Store mixed data in a cookie. Cookie names will be prepended with `lemonpi_`.
 
-#### `getCookie(String)` (`mixed`)
+### `getCookie(String)` (`mixed`)
 
 Retrieve mixed data from an earlier stored cookie.
