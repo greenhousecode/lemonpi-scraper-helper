@@ -55,7 +55,9 @@ export default class Scraper {
 
   onPush(fieldValues, result) {
     if (result) {
-      this.addError('Push unsuccessful:', result);
+      const { message, details } = result.warning || result.error;
+      this.addError('Push unsuccessful!', `LemonPI responded: ${message}`, details);
+      this.logErrors();
     } else {
       this.logSuccess('Scrape & push successful:', fieldValues);
     }
