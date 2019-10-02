@@ -76,7 +76,7 @@ export default class Scraper {
 
   push(fieldValues) {
     const { 'advertiser-id': advertiserId, sku } = fieldValues;
-    const fields = fieldValues;
+    const fields = { ...fieldValues };
     delete fields['advertiser-id'];
     delete fields.sku;
 
@@ -85,7 +85,7 @@ export default class Scraper {
         ? 'https://d.lemonpi.io/scrapes?validate=true'
         : 'https://d.lemonpi.io/scrapes';
 
-      fetch(url, this.onPush.bind(this, fields), {
+      fetch(url, this.onPush.bind(this, fieldValues), {
         method: 'POST',
         body: { 'advertiser-id': advertiserId, sku, fields },
       });

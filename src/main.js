@@ -1,4 +1,5 @@
 import Scraper from './Scraper';
+import Event from './Event';
 import {
   getUrl,
   getUrlPathSegment,
@@ -12,7 +13,7 @@ import {
 } from './helpers';
 
 export const scrape = (...args) => new Scraper(...args);
-export const event = () => {};
+export const event = (...args) => new Event(...args);
 
 export {
   getUrl,
