@@ -13,11 +13,14 @@ yarn add lemonpi-scraper-helper
 ## Usage
 
 ```js
-import { scrape, getUrl } from 'lemonpi-scraper-helper';
+import { scrape, event, getUrl } from 'lemonpi-scraper-helper';
 
 scrape({
   // Optional, but recommended: Whitelist specific URL(s) using a regular expression
   urlTest: /www\.example\.com/,
+
+  // Optional, enable product retargeting by firing the 'product-viewed' event
+  afterPush: event,
 
   // Required
   fields: {
@@ -58,7 +61,7 @@ When using LemonPI Scraper Helper directly from the browser, prepend all followi
   Add field names that may allow a scrape if their value returns empty.
 - **`beforePush`** (`function`, default: `(fields, done) => { done(fields); }`)
   Lifecycle hook to asynchronously manipulate field data before pushing to LemonPI. Takes arguments "fields" (`object`) containing the values for each configured field, and "done" (`function`) containing the callback function which expects a "fields" object.
-- **`afterPush`** (`function`, default: `(fields) => {}`)
+- **`afterPush`** (`function`, default: `fields => {}`)
   Lifecycle hook to execute after pushing data to LemonPI successfully. Takes arguments "fields" (`object`) containing the values for each configured field.
 - **`keepScraping`** (`boolean`, default: `true`)
   After one successful scrape, continue to scrape when field values update.
@@ -66,6 +69,16 @@ When using LemonPI Scraper Helper directly from the browser, prepend all followi
   The delay between field value checks in milliseconds.
 - **`allowTranslated`** (`boolean`, default: `false`)
   Enables scraping of client-translated pages (i.e. Google Translate).
+- **`debug`** (`boolean`, default: `/lemonpi_debug/i.test(window.location.href)`)
+  Enables console debugging.
+
+### `event(Object)`
+
+Used for flagging individual products with a level of importance (using cookies).
+
+- **`advertiser-id`** (`number`, required)
+- **`sku`** (`string`, required)
+- **`type`** (`string`, default: `"product-viewed"`)
 - **`debug`** (`boolean`, default: `/lemonpi_debug/i.test(window.location.href)`)
   Enables console debugging.
 
