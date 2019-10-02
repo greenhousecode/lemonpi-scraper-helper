@@ -4,26 +4,50 @@
   "main": "dist/bundle.umd.js",
   "module": "dist/bundle.esm.js",
   "files": [
-    "/dist/*"
+    "dist"
   ],
   "scripts": {
     "lint": "eslint --ignore-path .gitignore .",
+    "format": "prettier --ignore-path .gitignore --check '**/*.{css,graphql,html,json,md,scss,yml}'",
     "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "prepare": "npm run lint && npm run build",
-    "precommit": "npm run lint"
+    "dev": "rollup -cw",
+    "prepare": "yarn lint && yarn build"
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "yarn lint --fix",
+      "git add"
+    ],
+    "*.{css,graphql,html,json,md,scss,yml}": [
+      "yarn format --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "author": "Rick Stevens <rick.stevens@greenhousegroup.com> (http://www.greenhousegroup.com/)",
+  "repository": "github:greenhousecode/lemonpi-scraper-helper",
+  "license": "ISC",
+  "bugs": "https://github.com/greenhousecode/lemonpi-scraper-helper/issues",
+  "homepage": "https://github.com/greenhousecode/lemonpi-scraper-helper#readme",
   "devDependencies": {
+    "@babel/core": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
     "eslint": "^5.3.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "husky": "^3.0.7",
+    "lint-staged": "^9.4.1",
     "moment": "^2.24.0",
     "prettier": "^1.18.2",
     "rollup": "^1.16.3",
     "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-eslint": "^7.0.0",
     "rollup-plugin-uglify": "^6.0.2"
   }
 }
