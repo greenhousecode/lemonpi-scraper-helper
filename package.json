@@ -1,8 +1,10 @@
 {
   "name": "lemonpi-scraper-helper",
-  "version": "1.0.0",
-  "main": "dist/bundle.umd.js",
+  "version": "1.0.1",
+  "main": "dist/bundle.cjs.js",
   "module": "dist/bundle.esm.js",
+  "browser": "dist/bundle.iife.js",
+  "unpkg": "dist/bundle.iife.js",
   "files": [
     "dist"
   ],
