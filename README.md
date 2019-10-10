@@ -79,6 +79,7 @@ Used for flagging individual products with a level of importance (using cookies)
 - **`advertiser-id`** (`number`, required)
 - **`sku`** (`string`, required)
 - **`type`** (`string`, default: `"product-viewed"`)
+  One of: `"product-viewed"`, `"product-basketed"`, `"product-purchased"`
 - **`debug`** (`boolean`, default: `/lemonpi_debug/i.test(window.location.href)`)
   Enables console debugging.
 
