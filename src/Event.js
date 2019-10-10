@@ -40,7 +40,13 @@ export default class Event {
 
   onEvent(result) {
     if (result) {
-      this.logError(`Event "${this.config.type}" unsuccessful!`, 'LemonPI responded:', result);
+      const { message, details } = result.warning || result.error;
+
+      this.logError(
+        'Event unsuccessful!',
+        `LemonPI responded: "${message}"`,
+        details.problems[0].message,
+      );
     } else {
       this.logSuccess(`Event "${this.config.type}" successful`);
     }
