@@ -158,3 +158,10 @@ export const getCookie = key => {
 
   return undefined;
 };
+
+// Console styling
+export const getFormattedConsoleMessage = (message, messageStyle = '') => [
+  `%cScraper Helper%c ${message}`,
+  'padding:1px 6px 0;border-radius:2px;background:#fedc00;color:#313131',
+  messageStyle,
+];

@@ -1,11 +1,6 @@
-import { fetch } from './helpers';
+import { fetch, getFormattedConsoleMessage } from './helpers';
 
 const requiredFields = { 'advertiser-id': 'number', type: 'string', sku: 'string' };
-const getFormattedConsoleMessage = (message, messageStyle = '') => [
-  `%cScraper Helper (event)%c ${message}`,
-  'padding:1px 6px 0;border-radius:2px;background:#fedc00;color:#313131',
-  messageStyle,
-];
 
 export default class Event {
   constructor(config) {
@@ -40,7 +35,13 @@ export default class Event {
 
   onEvent(result) {
     if (result) {
-      this.logError(`Event "${this.config.type}" unsuccessful!`, 'LemonPI responded:', result);
+      const { message, details } = result.warning || result.error;
+
+      this.logError(
+        'Event unsuccessful!',
+        `LemonPI responded: "${message}"`,
+        details.problems[0].message,
+      );
     } else {
       this.logSuccess(`Event "${this.config.type}" successful`);
     }
