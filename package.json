@@ -36,20 +36,20 @@
   "bugs": "https://github.com/greenhousecode/lemonpi-scraper-helper/issues",
   "homepage": "https://github.com/greenhousecode/lemonpi-scraper-helper#readme",
   "devDependencies": {
-    "@babel/core": "^7.5.0",
-    "@babel/preset-env": "^7.5.0",
-    "eslint": "^5.3.0",
-    "eslint-config-airbnb-base": "^13.1.0",
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "eslint": "6.1.0",
+    "eslint-config-airbnb-base": "14.0.0",
     "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-prettier": "^3.1.0",
-    "husky": "^3.0.7",
-    "lint-staged": "^9.4.1",
+    "husky": "^3.0.9",
+    "lint-staged": "^9.4.2",
     "moment": "^2.24.0",
     "prettier": "^1.18.2",
-    "rollup": "^1.16.3",
+    "rollup": "^1.26.3",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-eslint": "^7.0.0",
-    "rollup-plugin-uglify": "^6.0.2"
+    "rollup-plugin-uglify": "^6.0.3"
   }
 }
