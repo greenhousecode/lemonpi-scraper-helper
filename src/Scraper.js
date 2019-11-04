@@ -1,11 +1,6 @@
-import { generateHash, fetch } from './helpers';
+import { generateHash, fetch, getFormattedConsoleMessage } from './helpers';
 
 const requiredFields = { 'advertiser-id': 'number', sku: 'string' };
-const getFormattedConsoleMessage = (message, messageStyle = '') => [
-  `%cScraper Helper%c ${message}`,
-  'padding:1px 6px 0;border-radius:2px;background:#fedc00;color:#313131',
-  messageStyle,
-];
 
 export default class Scraper {
   constructor(config) {
@@ -142,13 +137,15 @@ export default class Scraper {
           fieldValues[field] = fieldValues[field].replace(/\s+/g, ' ').trim();
         }
 
-        // Remove empty fields
-        if (fieldValues[field] == null || fieldValues[field] === '') {
+        // Remove empty fields (allow null-type fields)
+        if (fieldValues[field] === undefined || fieldValues[field] === '') {
           delete fieldValues[field];
 
           if (!this.config.optionalFields.includes(field)) {
             this.addError(field, 'is empty');
           }
+        } else if (fieldValues[field] === null && !this.config.optionalFields.includes(field)) {
+          this.addError(field, "can't be both null and required");
         }
 
         // Field exceptions
