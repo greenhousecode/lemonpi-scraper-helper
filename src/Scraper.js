@@ -147,15 +147,13 @@ export default class Scraper {
           }
         }
 
-        // Remove empty fields (but allow null-type fields)
-        if (fieldValues[field] === undefined || fieldValues[field] === '') {
-          delete fieldValues[field];
-
+        // Nullify empty fields
+        if (fieldValues[field] == null || fieldValues[field] === '') {
           if (!this.config.optionalFields.includes(field)) {
-            this.addError(field, 'is empty');
+            this.addError(field, 'is required and empty');
+          } else {
+            fieldValues[field] = null;
           }
-        } else if (fieldValues[field] === null && !this.config.optionalFields.includes(field)) {
-          this.addError(field, "can't be both null and required");
         }
       });
     }
