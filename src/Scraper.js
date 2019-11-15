@@ -129,6 +129,8 @@ export default class Scraper {
             if (!this.config.optionalFields.includes(field)) {
               this.addError(field, message);
             }
+
+            delete fieldValues[field];
           }
         }
 
@@ -137,22 +139,20 @@ export default class Scraper {
           fieldValues[field] = fieldValues[field].replace(/\s+/g, ' ').trim();
         }
 
-        // Remove empty fields (allow null-type fields)
-        if (fieldValues[field] === undefined || fieldValues[field] === '') {
-          delete fieldValues[field];
-
-          if (!this.config.optionalFields.includes(field)) {
-            this.addError(field, 'is empty');
-          }
-        } else if (fieldValues[field] === null && !this.config.optionalFields.includes(field)) {
-          this.addError(field, "can't be both null and required");
-        }
-
-        // Field exceptions
+        // Required fields type check
         if (Object.keys(requiredFields).includes(field)) {
           // eslint-disable-next-line valid-typeof
           if (typeof fieldValues[field] !== requiredFields[field]) {
             this.addError(field, `needs to be a ${requiredFields[field]}`);
+          }
+        }
+
+        // Nullify empty fields
+        if (fieldValues[field] == null || fieldValues[field] === '') {
+          if (!this.config.optionalFields.includes(field)) {
+            this.addError(field, 'is required and empty');
+          } else {
+            fieldValues[field] = null;
           }
         }
       });
