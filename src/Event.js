@@ -50,15 +50,20 @@ export default class Event {
   event() {
     const e = { 'event-type': this.config.type, sku: this.config.sku };
 
-    try {
-      fetch(
-        `https://d.lemonpi.io/a/${
-          this.config['advertiser-id']
-        }/product/event?e=${encodeURIComponent(JSON.stringify(e))}`,
-        this.onEvent.bind(this),
-      );
-    } catch ({ message }) {
-      this.logError(`Event "${this.config.type}" unsuccessful:`, message);
+    const url = `https://d.lemonpi.io/a/${
+      this.config['advertiser-id']
+    }/product/event?e=${encodeURIComponent(JSON.stringify(e))}`;
+
+    if (this.config.debug) {
+      // Mock the event though XHR to gather feedback from LemonPI
+      try {
+        fetch(url, this.onEvent.bind(this));
+      } catch ({ message }) {
+        this.logError(`Event "${this.config.type}" unsuccessful:`, message);
+      }
+    } else {
+      // Fire the actual event and set the cookie through an image pixel
+      new Image().src = url;
     }
   }
 }
