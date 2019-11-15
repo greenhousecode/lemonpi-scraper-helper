@@ -129,6 +129,8 @@ export default class Scraper {
             if (!this.config.optionalFields.includes(field)) {
               this.addError(field, message);
             }
+
+            delete fieldValues[field];
           }
         }
 
@@ -137,7 +139,15 @@ export default class Scraper {
           fieldValues[field] = fieldValues[field].replace(/\s+/g, ' ').trim();
         }
 
-        // Remove empty fields (allow null-type fields)
+        // Required fields type check
+        if (Object.keys(requiredFields).includes(field)) {
+          // eslint-disable-next-line valid-typeof
+          if (typeof fieldValues[field] !== requiredFields[field]) {
+            this.addError(field, `needs to be a ${requiredFields[field]}`);
+          }
+        }
+
+        // Remove empty fields (but allow null-type fields)
         if (fieldValues[field] === undefined || fieldValues[field] === '') {
           delete fieldValues[field];
 
@@ -146,14 +156,6 @@ export default class Scraper {
           }
         } else if (fieldValues[field] === null && !this.config.optionalFields.includes(field)) {
           this.addError(field, "can't be both null and required");
-        }
-
-        // Field exceptions
-        if (Object.keys(requiredFields).includes(field)) {
-          // eslint-disable-next-line valid-typeof
-          if (typeof fieldValues[field] !== requiredFields[field]) {
-            this.addError(field, `needs to be a ${requiredFields[field]}`);
-          }
         }
       });
     }
